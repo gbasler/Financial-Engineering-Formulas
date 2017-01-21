@@ -1,0 +1,296 @@
+\documentclass[a4paper, DIV19,12pt]{scrartcl}
+\usepackage[british,UKenglish,USenglish,english,american,ngerman]{babel}
+%\usepackage[OT2,T1]{fontenc}
+%\DeclareSymbolFont{cyrletters}{OT2}{wncyr}{m}{n}
+%\DeclareMathSymbol{\Sha}{\mathalpha}{cyrletters}{"58}
+%\DeclareMathSymbol{\sha}{\mathalpha}{cyrletters}{"57}
+\usepackage[utf8]{inputenc}
+\usepackage[table]{xcolor}
+\usepackage[fleqn]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{mathtools}
+\usepackage[utopia]{mathdesign}
+\usepackage{tabularx}
+\usepackage{mdwlist}
+\usepackage{booktabs}
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{pdfpages}
+\usepackage{esvect}
+\usepackage{trfsigns}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+% Parentheses, ceilings, floors and angle brackets - small and big
+
+\newcommand{\parens}   [1]{         (   #1          )   } % argument in (.)
+\newcommand{\ceils}    [1]{     \lceil  #1       \rceil}  % argument in ceilings
+\newcommand{\floors}   [1]{     \lfloor #1       \rfloor} % argument in floors
+\newcommand{\angles}   [1]{     \langle #1       \rangle} % argument in <.>
+\newcommand{\brackets} [1]{         [   #1          ]   } % argument in [.]
+\newcommand{\braces} [1]{         \{   #1          \}   } % argument in {.}
+
+% manual control: ( \big( \Big( \bigg( \Bigg(
+\newcommand{\bparens}  [1]{\left(       #1 \right)      } % argument in big (.)
+\newcommand{\bceils}   [1]{\left\lceil  #1 \right\rceil}  % argument in big ceilings
+\newcommand{\bfloors}  [1]{\left\lfloor #1 \right\rfloor} % argument in big floors
+\newcommand{\bangles}  [1]{\left\langle #1 \right\rangle} % argument in big <.>
+\newcommand{\bbrackets}[1]{\left   [    #1 \right   ]   } % argument in big [.]
+\newcommand{\bbraces} [1]{\left     \{   #1          \right\}   } % argument in {.}
+
+
+\title{Financial Engineering Formulas}
+\author{G\'{e}rard Basler}
+\date{} % no date
+
+\begin{document}
+\maketitle
+
+\section{Integration by parts}
+
+$u = u(x)$ and $du = u'(x) dx$, while $v = v(x)$ and $dv = v'(x) dx$
+\begin{eqnarray}
+\int u \, v'  dx = uv-\int v \, u' dx.\! 
+\end{eqnarray}
+
+\section{First fundamental theorem of asset pricing}
+
+No arbitrage $\Leftrightarrow$ there exists a martingale measure $\mathbb{Q}$ equivalent to the historical measure $\mathbb{P}$.
+
+\paragraph{European style contingent claim} is a financial product which can only be exercised at maturity.
+
+\section{Binomial Model}
+
+\subsection{One Period Binomial Model}
+
+No arbitrage $\Leftrightarrow$ $0 < d < 1 + r < u$
+
+\paragraph{Solving using risk neutral probabilities:}
+
+\begin{enumerate}
+\item Use the evolution of the stock $S$, i.e., $u = \frac{S_{1u}}{S_0}$, $d = \frac{S_{1d}}{S_0}$ to calculate $q_u, q_d$: 
+\begin{equation}
+q_u = \frac{\bparens{1+r} - d}{u - d}, \quad q_d = \frac{u - \bparens{1+r}}{u - d} 
+,\quad 1 + r = q_d d + q_u u, \quad q_u, q_d \in \bparens{0, 1}, \quad q_u + q_d = 1
+\end{equation}
+\item
+In the one-period binomial model, no arbitrage implies that the price $H_0$ of any contingent claim $H_1$ is given by 
+\begin{equation}
+H_0 = \frac{1}{1 + r} \mathbb{E_Q}\bbrackets{H_1}
+\end{equation}
+where $\mathbb{Q}$ is the martingale measure given by $q_u$ and $q_d$.
+
+\end{enumerate}
+
+\subsection{Second fundamental theorem of asset pricing}
+In the absence of arbitrage, the binomial model is complete iff there exists a \emph{unique} martingale measure $\mathbb{Q}$.
+
+\paragraph{Binomial option pricing formula}
+
+\begin{equation}
+H_0 = \frac{1}{\bparens{1 + \tilde{r}}^N} \sum_{i = 0}^N \begin{pmatrix}N \\ i \end{pmatrix} q_u^i q_d^{N - i} H\bparens{S_0 u^i d^{N - i}},\quad \tilde{r} = \frac{rT}{N}
+\end{equation}
+$N$ = number of steps.
+
+\section{Probability Density Function}
+
+The standard normal distribution has probability density
+\begin{eqnarray}
+    f(x) = \frac{1}{\sqrt{2\pi}}\; e^{-\frac{x^2}{2}}.\quad\text{with } \operatorname{E}[X] = \int_{-\infty}^\infty x\,f(x)\,dx.
+\end{eqnarray}
+or with $\mu, \sigma$:
+\begin{eqnarray}
+    f(x) = \frac{1}{\sigma \sqrt{2\pi}}\; e^{-\frac{\parens{x-\mu}^2}{2\sigma^2}}
+\end{eqnarray}
+
+$X \sim N \parens{\mu, \sigma^2}$ can be written as $X = \mu + \sigma Y$ with $Y \sim N\parens{0,1}$
+
+\section{It\^{o}}
+
+\begin{align}
+df\bparens{t, X_t, Y_t} &= \frac{\partial}{\partial t}f\bparens{t, X_t, Y_t}\,dt  \\
+ &+ \frac{\partial}{\partial X_t}f\bparens{t, X_t, Y_t}\,dX_t + \frac{1}{2} \frac{\partial^2}{\partial X^2_t}f\bparens{t, X_t, Y_t}\,dX^2_t \\
+ &+ \frac{\partial}{\partial Y_t}f\bparens{t, X_t, Y_t}\,dY_t + \frac{1}{2} \frac{\partial^2}{\partial Y^2_t}f\bparens{t, X_t, Y_t}\,dY^2_t \\
+  &+ \frac{\partial}{\partial X_t \partial Y_t}f\bparens{t, X_t, Y_t}\,dX_t dY_t
+\end{align}
+
+\begin{tabular}{|c| c c|}
+\hline
+  $\times$ & $dW_i$ & $dt$  \\
+  \hline
+  $dW_j$ & $\rho_{ij}dt$ & 0 \\
+  $dt$ & 0 & 0 \\
+  \hline
+\end{tabular}
+
+\paragraph{Product rule}
+
+Given two Brownian motions $X_t$ and $Y_t$, then:
+\begin{eqnarray}
+d\bparens{X_tY_t} = X_t dY_t + Y_t dX_t + dX_t dY_t
+\end{eqnarray}
+
+\section{Black Scholes Model}
+
+\paragraph{Black-Scholes PDE with dividends}
+
+\begin{eqnarray}
+\frac{\partial C_t}{\partial{t}} + \bparens{r - q} S_t \frac{\partial C_t}{\partial S} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 C_t}{\partial S^2} = rC_t
+\end{eqnarray}
+
+\subsection{Assumptions}
+
+\subsubsection{``Usual assumptions'':}
+
+\begin{enumerate}
+\item no arbitrage
+\item no market frictions
+\end{enumerate}
+
+\subsubsection{Additional assumptions:}
+
+\begin{enumerate}
+\item Stock follows a geometric Brownian motion: Log-normal stock prices $\rightarrow$ \textbf{Normal instantaneous returns},
+\item Price increments $S_{t+\Delta t} - S_t$ are \textbf{independent of the past} $F_t$,
+\item Constant \textbf{drift} and \textbf{volatility} (standard deviation of returns),
+\item Constant and known \textbf{risk-free interest rates},
+\item \textbf{One single random factor}, the stock price which evolves \textbf{continuously}.
+\item \textbf{No dividends}.
+\end{enumerate}
+
+\section{Options}
+
+Write like $\left(S_t - 100\right)$
+
+\begin{description}
+\item[Butterfly] Long 2 calls, short 2 calls: low volatility expected
+\item[Straddle] Long 1 ATM call, long 1 ATM put: high volatility expected
+\item[Strangle] Long 1 call, long 1 put: high volatility expected
+\end{description}
+
+The Black-Scholes option pricing formula (relates the price of a call option $C_t$ (or a put option $P_t$ respectively)
+to the strike price $K$, time to maturity $\tau = T - t$, risk-free interest rate $r$, a constant volatility of returns of the underlying asset 
+$\sigma$, dividend yield $q$ and current spot price $S_t$:
+\begin{align}
+C_t &= S_t e^{-q\tau}\Phi\bparens{d_1} - K e^{-r\tau}\Phi\bparens{d_2}, \quad \text{where } \tau = T - t\\
+P_t &= K e^{-r\tau}\Phi\bparens{-d_2} - S_t e^{-q\tau}\Phi\bparens{-d_1},\\
+d_1 &= \frac{\ln\bparens{\frac{S_t}{K}} + \bparens{r - q + \frac{\sigma^2}{2}}\tau}{\sigma \sqrt{\tau}}, \quad d_2 = d_1 - \sigma \sqrt{\tau}
+\end{align}
+
+Call Delta:
+\begin{align}
+\Delta_{C_t} &= e^{-q\tau}\Phi\bparens{d_1}, \quad \text{where } \tau = T - t
+\end{align}
+$\Phi$ is the cumulative density function.
+
+\paragraph{Proof:} The key is to replace $d_2$ with $d_1 - \sigma\sqrt{\tau}$ in the right moment:
+
+\begin{align}
+\text{with }\frac{\partial d_1}{\partial S}  &= \frac{1}{S \sigma\sqrt{\tau}} \\
+\frac{\partial C}{\partial S}  &= \Phi\bparens{d_1} + \underbrace{S \phi\bparens{d_1} \frac{1}{S\sigma\sqrt{\tau}}}_{=  \phi\bparens{d_1}\frac{1}{\sigma\sqrt{\tau}}} - Ke^{-r\tau}\Phi\bparens{d_2}\frac{1}{S\sigma\sqrt{\tau}}, \quad \text{(product rule)} \\
+\text{continue with }\Phi\bparens{d_2} &= \Phi\bparens{d_1 - \sigma\sqrt{\tau}} \\
+&= \frac{1}{\sqrt{2\pi}} e^{-\frac{\bparens{d_1 - \sigma\sqrt{\tau}}^2}{2}} \\
+&= \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}\bparens{d_1^2 - 2d_1\sigma\sqrt{\tau} + \sigma^2\tau}} \\
+&= \phi\bparens{d_1} e^{-\frac{1}{2}\bparens{- 2d_1\sigma\sqrt{\tau} + \sigma^2\tau}} \\
+&= \phi\bparens{d_1} e^{d_1\sigma\sqrt{\tau} - \frac{\sigma^2\tau}{2}} \\
+&= \phi\bparens{d_1} e^{\ln\bparens{\frac{S}{K}} + \bparens{r + \frac{\sigma^2}{2}}\tau - \frac{\sigma^2\tau}{2}} \\
+&= \phi\bparens{d_1} \frac{S}{K} e^{r\tau} \\
+\text{thus } \frac{\partial C}{\partial S}  &= \Phi\bparens{d_1} + \phi\bparens{d_1} \frac{1}{\sigma\sqrt{\tau}} - 
+\underbrace{Ke^{-r\tau}\phi\bparens{d_1} \frac{S}{K} e^{r\tau}\frac{1}{S\sigma\sqrt{\tau}}}_{=  \phi\bparens{d_1}\frac{1}{\sigma\sqrt{\tau}}} \\
+\text{hence } \frac{\partial C}{\partial S}  &= \Phi\bparens{d_1}
+\end{align}
+
+Call Gamma:
+\begin{align}
+\Gamma_{C_t} &= \frac{e^{-q\tau} \phi\parens{d_1}}{S_t \sigma \sqrt{\tau}}
+\end{align}
+$\phi$ is the probability density function.
+
+\section{Put-Call Parity}
+
+Both options have same maturity $T$. Market is free of arbitrage ($\rightarrow$ law of one price).
+
+\begin{eqnarray}
+C_t - P_t = S_t e^{- q\bparens{T - t}} - K e^{- r\bparens{T - t}}, \quad \text{remember: similarity to BS-Formula}\\
+\end{eqnarray}
+
+$K e^{- r\bparens{T - t}}$ can be written as $B\bparens{t, T}$, i.e., bond pays 1 at maturity $T$.
+
+\subsection{Forward Contract}
+
+enter for free at time $t_0$, strike $K = S_{t_0} e^{r \bparens{T-t_0}}$
+
+value of a forward:
+\begin{eqnarray}
+F_t = S_t - K e^{-r \bparens{T- t}}
+\end{eqnarray}
+
+\paragraph{Geometric Brownian Motion}
+
+\begin{align}
+\frac{dS_t}{S_t} &= \mu dt + \sigma dW_t, \quad S_t = S_0 e^{\bparens{\mu - \frac{\sigma^2}{2}} t + \sigma W_t}\\
+\end{align}
+
+Change of measure from $\mathbb{P}$ to $\mathbb{Q}$:
+
+\begin{equation}
+S_t = S_0 e^{\bparens{\mu - \frac{\sigma^2}{2}} t + \sigma W_t} \quad \widetilde{W} = W_t + \frac{\mu -r}{\sigma} t
+\end{equation}
+
+
+$\E[W_t] = 0$, \quad ${Var}(W_t) = t$, \quad $\sigma^2_{W_t} = t$
+
+\paragraph{Gaussian Shift Theorem}
+
+$\E[e^{cZ} f(Z)] = e^{\frac{c^2}{2}} \E[f(Z+c)]$
+
+\section{Implied Volatility}
+
+\paragraph{No arbitrage conditions}
+
+\begin{align}
+-e^{r_{t,T}\bparens{T-t}}  \leq \frac{\partial C\bparens{S_t, t, K, T, r_{t,T}, q_{t,T}}}{\partial K} & \leq 0, \label{eqn: strike}\\
+                                       \frac{\partial^2 C\bparens{S_t, t, K, T, r_{t,T}, q_{t,T}}}{\partial K^2} & \geq 0, \label{eqn: density}\\
+\max\bparens{e^{-q_{t,T}\bparens{T-t}}S_t -e^{-r_{t,T}\bparens{T-t}}K, 0}  \leq C\bparens{S_t, t, K, T, r_{t,T}, q_{t,T}} & \leq e^{q_{t,T}\bparens{T-t}}S_t, \label{eqn: calendar spread} \\
+                                         \frac{\partial C\bparens{S_t, t, K, T, r_{t,T}, q_{t,T}}}{\partial T} & \geq 0,
+\end{align}
+
+\ref{eqn: strike}: $K1 < K2$, then $\bparens{S_T - K1}^+ > \bparens{S_T - K2}^+$, i.e., call with lower strike has a higher payoff in all future states.
+
+\ref{eqn: density}: positive risk-neutral density, also corresponds to infinitesimal butterfly spread.
+
+\ref{eqn: calendar spread}:
+Buying a call and selling another call with a shorter maturity (but same strike) than the first option 
+defines a \emph{calendar spread strategy}. All calendar spreads need to have positive value.
+
+\section{Breeden-Litzenberger formula}
+
+\begin{eqnarray}
+f^S_T\bparens{K, \tau} := f_{S_T | S_t}\bparens{S_T = K} = e^{r \tau}\frac{\partial^2 C_t}{\partial K^2}.
+\end{eqnarray}
+
+\section{Local Volatility}
+
+\begin{equation}
+\sigma\bparens{K,T}^2 = \frac{\frac{\partial C}{\partial T}\bparens{K,T} + q_T C\bparens{K,T} + \bparens{r_T - q_T} K \frac{\partial C}{\partial K}\bparens{K,T}}{ \frac{1}{2} K^2 \frac{\partial^2 C}{\partial K^2} C\bparens{K,T} }
+\end{equation}
+
+\section{Jump Diffusion}
+
+\subsection{Merton Model}
+
+\begin{equation}
+\frac{dS_t}{S_{t^-}} = \mu dt + \sigma d\tilde{W}_t + \bparens{e^{J_t} -1} d\tilde{N}_t
+\end{equation}
+
+\subsection{Poisson Process}
+
+\begin{equation}
+\mathbb{E}^Q [ e^{J_t} ] = \int_0^\infty \frac{1}{\mu} e^{-\frac{1}{\mu} \pm 1}x dx -1, \quad \pm \text{ is the jump direction}
+\end{equation}
+
+\end{document}  
